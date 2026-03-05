@@ -2,7 +2,6 @@
  * File: database/migrations/003_create_sessions.sql
  * 
  * Sessions Table
- * Stores JWT tokens and session management
  */
 
 CREATE TABLE sessions (
@@ -23,6 +22,3 @@ CREATE TABLE sessions (
 CREATE INDEX idx_sessions_user ON sessions(user_id);
 CREATE INDEX idx_sessions_active ON sessions(is_active) WHERE is_active = TRUE;
 CREATE INDEX idx_sessions_expires ON sessions(expires_at);
-
--- Auto-cleanup inactive sessions
--- DELETE FROM sessions WHERE expires_at < NOW() OR is_active = FALSE;

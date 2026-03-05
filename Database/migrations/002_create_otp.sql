@@ -2,7 +2,6 @@
  * File: database/migrations/002_create_otp.sql
  * 
  * OTP Verification Table
- * Stores OTP codes with attempt tracking
  */
 
 CREATE TABLE otp_verifications (
@@ -22,6 +21,3 @@ CREATE TABLE otp_verifications (
 CREATE INDEX idx_otp_phone ON otp_verifications(phone_number);
 CREATE INDEX idx_otp_expires ON otp_verifications(expires_at);
 CREATE INDEX idx_otp_verified ON otp_verifications(is_verified, created_at DESC);
-
--- Auto-clean expired OTPs (optional - run manually or via cron job)
--- DELETE FROM otp_verifications WHERE expires_at < NOW();

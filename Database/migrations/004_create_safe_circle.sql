@@ -2,7 +2,6 @@
  * File: database/migrations/004_create_safe_circle.sql
  * 
  * Safe Circle Contacts Table
- * Stores emergency contacts and safe people
  */
 
 CREATE TABLE safe_circle_contacts (
@@ -11,7 +10,7 @@ CREATE TABLE safe_circle_contacts (
   contact_name VARCHAR(100) NOT NULL,
   contact_phone VARCHAR(15) NOT NULL,
   contact_email VARCHAR(100),
-  relation VARCHAR(50), -- 'mother', 'father', 'friend', 'brother', 'sister', etc.
+  relation VARCHAR(50),
   is_emergency_contact BOOLEAN DEFAULT FALSE,
   notification_enabled BOOLEAN DEFAULT TRUE,
   address TEXT,

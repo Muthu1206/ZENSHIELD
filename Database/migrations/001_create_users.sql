@@ -1,22 +1,7 @@
 /**
- * DATABASE SETUP GUIDE
- * 
- * Step 1: Install PostgreSQL
- * - Windows: https://www.postgresql.org/download/windows/
- * - Mac: brew install postgresql
- * - Linux: sudo apt-get install postgresql
- * 
- * Step 2: Create Database
- * psql -U postgres
- * CREATE DATABASE zenshield;
- * 
- * Step 3: Run all SQL migration files below in order
- * psql -U postgres -d zenshield -f 001_create_users.sql
- * psql -U postgres -d zenshield -f 002_create_otp.sql
- * psql -U postgres -d zenshield -f 003_create_sessions.sql
- * etc...
- * 
  * File: database/migrations/001_create_users.sql
+ * 
+ * Users Table - Main user data
  */
 
 -- Extension for UUID
@@ -39,7 +24,7 @@ CREATE TABLE users (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Index for faster queries
+-- Indexes for faster queries
 CREATE INDEX idx_users_phone ON users(phone_number);
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_created_at ON users(created_at DESC);

@@ -1,11 +1,6 @@
 /**
  * Helper Utilities
  * File: utils/helpers.js
- * 
- * Includes:
- * - OTP Generation
- * - Password Hashing
- * - JWT Token Generation
  */
 
 const jwt = require('jsonwebtoken');
@@ -36,7 +31,7 @@ exports.generateTokens = (userId, phoneNumber) => {
       phoneNumber,
       type: 'access',
     },
-    process.env.JWT_SECRET,
+    process.env.JWT_SECRET || 'your-secret-key',
     {
       expiresIn: '1h',
       issuer: 'zenshield-backend',
@@ -50,7 +45,7 @@ exports.generateTokens = (userId, phoneNumber) => {
       phoneNumber,
       type: 'refresh',
     },
-    process.env.REFRESH_TOKEN_SECRET,
+    process.env.REFRESH_TOKEN_SECRET || 'your-refresh-secret',
     {
       expiresIn: '30d',
       issuer: 'zenshield-backend',
@@ -62,21 +57,9 @@ exports.generateTokens = (userId, phoneNumber) => {
 };
 
 /**
- * Verify JWT Token
- */
-exports.verifyAccessToken = (token) => {
-  try {
-    return jwt.verify(token, process.env.JWT_SECRET);
-  } catch (error) {
-    return null;
-  }
-};
-
-/**
- * Validate phone number format (Indian)
+ * Validate phone number format (10 digits)
  */
 exports.validatePhoneFormat = (phone) => {
-  // 10 digits, no + or country code in input
   const phoneRegex = /^[0-9]{10}$/;
   return phoneRegex.test(phone);
 };
@@ -86,19 +69,4 @@ exports.validatePhoneFormat = (phone) => {
  */
 exports.formatPhoneNumber = (phone) => {
   return `+91${phone}`;
-};
-
-/**
- * Hash password using bcrypt
- */
-exports.hashPassword = async (password) => {
-  const salt = await require('bcrypt').genSalt(12);
-  return require('bcrypt').hash(password, salt);
-};
-
-/**
- * Compare password with hash
- */
-exports.comparePassword = async (password, hash) => {
-  return require('bcrypt').compare(password, hash);
 };

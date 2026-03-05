@@ -1,43 +1,34 @@
 /**
  * Authentication Routes
- * File: routes/authRoutes.js
- * 
- * Endpoints:
- * - POST /send-otp
- * - POST /verify-otp
- * - POST /complete-registration
- * - POST /refresh-token
- * - POST /logout
  */
 
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
-const { validatePhone, validateOTP } = require('../middleware/validation');
-const { authenticate } = require('../middleware/auth');
+const { validatePhone, validateOTP, authenticate } = require('../middleware/auth');
 
 module.exports = (pool) => {
-  // Send OTP
+  // POST /api/auth/send-otp
   router.post('/send-otp', validatePhone, (req, res, next) => {
     authController.sendOTP(req, res, next, pool);
   });
 
-  // Verify OTP
+  // POST /api/auth/verify-otp
   router.post('/verify-otp', validatePhone, validateOTP, (req, res, next) => {
     authController.verifyOTP(req, res, next, pool);
   });
 
-  // Complete Registration
+  // POST /api/auth/complete-registration
   router.post('/complete-registration', authenticate, (req, res, next) => {
     authController.completeRegistration(req, res, next, pool);
   });
 
-  // Refresh Token
+  // POST /api/auth/refresh-token
   router.post('/refresh-token', (req, res, next) => {
     authController.refreshToken(req, res, next, pool);
   });
 
-  // Logout
+  // POST /api/auth/logout
   router.post('/logout', authenticate, (req, res, next) => {
     authController.logout(req, res, next, pool);
   });

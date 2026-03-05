@@ -1,12 +1,9 @@
 /**
- * Authentication & Validation Middleware
- * File: middleware/auth.js and middleware/validation.js
+ * Authentication Middleware
  */
 
 const jwt = require('jsonwebtoken');
 const { validatePhoneFormat } = require('../utils/helpers');
-
-// ============ AUTHENTICATION MIDDLEWARE ============
 
 exports.authenticate = (req, res, next) => {
   try {
@@ -23,9 +20,8 @@ exports.authenticate = (req, res, next) => {
     const token = authHeader.substring(7);
 
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
 
-      // Attach user to request
       req.user = {
         id: decoded.userId,
         phoneNumber: decoded.phoneNumber,
@@ -56,8 +52,6 @@ exports.authenticate = (req, res, next) => {
     });
   }
 };
-
-// ============ VALIDATION MIDDLEWARE ============
 
 exports.validatePhone = (req, res, next) => {
   const { phoneNumber } = req.body;
@@ -101,60 +95,4 @@ exports.validateOTP = (req, res, next) => {
   }
 
   next();
-};
-
-exports.validateName = (req, res, next) => {
-  const { name } = req.body;
-
-  if (!name || !name.trim()) {
-    return res.status(400).json({
-      success: false,
-      error: 'Name is required',
-      errorCode: 'MISSING_NAME',
-    });
-  }
-
-  if (name.trim().length < 2 || name.trim().length > 100) {
-    return res.status(400).json({
-      success: false,
-      error: 'Name must be between 2 and 100 characters',
-      errorCode: 'INVALID_NAME_LENGTH',
-    });
-  }
-
-  next();
-};
-
-// ============ ERROR HANDLER ============
-
-exports.errorHandler = (err, req, res, next) => {
-  console.error('Error:', err);
-
-  let statusCode = err.statusCode || 500;
-  let errorMessage = err.message || 'Internal server error';
-  let errorCode = err.errorCode || 'INTERNAL_ERROR';
-
-  // Database errors
-  if (err.code === 'ECONNREFUSED') {
-    statusCode = 503;
-    errorMessage = 'Database connection failed';
-    errorCode = 'DB_CONNECTION_ERROR';
-  }
-
-  // PostgreSQL unique violation
-  if (err.code === '23505') {
-    statusCode = 409;
-    errorMessage = 'Resource already exists';
-    errorCode = 'DUPLICATE_RECORD';
-  }
-
-  res.status(statusCode).json({
-    success: false,
-    error: errorMessage,
-    errorCode,
-    ...(process.env.NODE_ENV === 'development' && { 
-      details: err.message,
-      stack: err.stack
-    }),
-  });
 };
